@@ -8,7 +8,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyDPje5xAHdZLgrLwianNB1HstWbWyLBqD0",
   authDomain: "zilzzz.firebaseapp.com",
   projectId: "zilzzz",
-  storageBucket: "zilzzz.firebasestorage.app",
+  storageBucket: "zilzzz.appspot.com", // 🔧 FIXED this line
   messagingSenderId: "313206247942",
   appId: "1:313206247942:web:d5cff836164329cfd32987"
 };

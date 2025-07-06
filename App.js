@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, ActivityIndicator, Text } from 'react-native';
-import { onAuthStateChanged } from 'firebase/auth';
+import { View, ActivityIndicator } from 'react-native';
+import {
+  onAuthStateChanged,
+  setPersistence,
+  browserLocalPersistence,
+} from 'firebase/auth';
 import { auth } from './firebase';
 import LoginScreen from './LoginScreen';
 import TaskScreen from './TaskScreen';
@@ -10,7 +14,7 @@ export default function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // 🔔 Ask for notification permissions
+  // 🔔 Ask for notification permission
   useEffect(() => {
     const registerForPushNotifications = async () => {
       const { status } = await Notifications.requestPermissionsAsync();
@@ -21,26 +25,46 @@ export default function App() {
     registerForPushNotifications();
   }, []);
 
-  // 🔐 Firebase Auth listener
+  // 🔐 Set Firebase auth persistence and track login state
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      setLoading(false);
-    });
-    return unsubscribe;
+    const initAuth = async () => {
+      try {
+        // Ensure user stays logged in across restarts
+        await setPersistence(auth, browserLocalPersistence);
+
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+          setUser(currentUser);
+          setLoading(false);
+        });
+
+        return unsubscribe;
+      } catch (err) {
+        console.error('Failed to set auth persistence:', err);
+        setLoading(false);
+      }
+    };
+
+    initAuth();
   }, []);
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1e1e1e' }}>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          backgroundColor: '#1e1e1e',
+        }}
+      >
         <ActivityIndicator size="large" color="#ffb6c1" />
       </View>
     );
   }
 
-  if (!user) {
-    return <LoginScreen onLogin={() => setUser(auth.currentUser)} />;
-  }
-
-  return <TaskScreen />;
+  return user ? (
+    <TaskScreen />
+  ) : (
+    <LoginScreen onLogin={() => setUser(auth.currentUser)} />
+  );
 }

@@ -4,7 +4,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-nativ
 import { auth } from './firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 
-export default function LoginScreen({ onLogin }) {
+export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLogin, setIsLogin] = useState(true); // toggle between login/signup
@@ -16,7 +16,7 @@ export default function LoginScreen({ onLogin }) {
       } else {
         await createUserWithEmailAndPassword(auth, email, password);
       }
-      onLogin(); // navigate to main app
+      // ✅ No need to manually call onLogin or navigate — App.js handles it
     } catch (err) {
       alert(err.message);
     }
@@ -53,10 +53,40 @@ export default function LoginScreen({ onLogin }) {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#1e1e1e', justifyContent: 'center', alignItems: 'center', padding: 20 },
-  title: { fontSize: 24, color: '#fff', marginBottom: 20 },
-  input: { width: '100%', borderWidth: 1, borderColor: '#aaa', padding: 10, borderRadius: 8, marginBottom: 10, color: '#fff' },
-  button: { backgroundColor: '#ffb6c1', padding: 12, borderRadius: 8, width: '100%', alignItems: 'center' },
-  buttonText: { color: '#000', fontWeight: 'bold' },
-  toggleText: { color: '#aaa', marginTop: 10 },
+  container: {
+    flex: 1,
+    backgroundColor: '#1e1e1e',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  title: {
+    fontSize: 24,
+    color: '#fff',
+    marginBottom: 20,
+  },
+  input: {
+    width: '100%',
+    borderWidth: 1,
+    borderColor: '#aaa',
+    padding: 10,
+    borderRadius: 8,
+    marginBottom: 10,
+    color: '#fff',
+  },
+  button: {
+    backgroundColor: '#ffb6c1',
+    padding: 12,
+    borderRadius: 8,
+    width: '100%',
+    alignItems: 'center',
+  },
+  buttonText: {
+    color: '#000',
+    fontWeight: 'bold',
+  },
+  toggleText: {
+    color: '#aaa',
+    marginTop: 10,
+  },
 });
