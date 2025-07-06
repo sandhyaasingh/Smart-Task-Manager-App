@@ -1,10 +1,7 @@
+// App.js
 import React, { useEffect, useState } from 'react';
 import { View, ActivityIndicator } from 'react-native';
-import {
-  onAuthStateChanged,
-  setPersistence,
-  browserLocalPersistence,
-} from 'firebase/auth';
+import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase';
 import LoginScreen from './LoginScreen';
 import TaskScreen from './TaskScreen';
@@ -25,26 +22,13 @@ export default function App() {
     registerForPushNotifications();
   }, []);
 
-  // 🔐 Set Firebase auth persistence and track login state
+  // 🔐 Listen for login state changes (persistent across app restarts)
   useEffect(() => {
-    const initAuth = async () => {
-      try {
-        // Ensure user stays logged in across restarts
-        await setPersistence(auth, browserLocalPersistence);
-
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-          setUser(currentUser);
-          setLoading(false);
-        });
-
-        return unsubscribe;
-      } catch (err) {
-        console.error('Failed to set auth persistence:', err);
-        setLoading(false);
-      }
-    };
-
-    initAuth();
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setLoading(false);
+    });
+    return unsubscribe;
   }, []);
 
   if (loading) {
