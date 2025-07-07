@@ -92,8 +92,8 @@ This Smart Task Manager App demonstrates a fully functional mobile solution for 
 
 ---
 
-## ⭐ If You Like It
+## ⭐ If You Like It 
 
-Give this repo a ⭐😁💖 
+Give this repo a ⭐💖 
 
 ---
